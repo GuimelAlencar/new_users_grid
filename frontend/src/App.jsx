@@ -16,7 +16,7 @@ function App() {
 
   const getUsers = async () => {
     try{
-      const response = await fetch(`http://localhost:8080/users`);
+      const response = (await fetch(`http://localhost:8080/users`));
       const json = await response.json();
       setUsers(json.users.sort((a, b) => (a.userName > b.userName ? 1 : -1)));
     } catch(error) {
