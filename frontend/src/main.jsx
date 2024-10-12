@@ -1,19 +1,9 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import {createBrowserRouter, RouterProvider} from "react-router-dom";
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import UsersGrid from './pages/UsersGrid'
 
-import App from './App.jsx';
-
-const router = createBrowserRouter([
-  {
-    path: '/home',
-    element: <App />,
-    errorElement: <div>404 not found</div>
-  }
-]);
-
-ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <RouterProvider router={router} /> 
-  </React.StrictMode>
-);
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <UsersGrid />
+  </StrictMode>,
+)
