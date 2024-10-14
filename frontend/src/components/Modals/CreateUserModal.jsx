@@ -13,8 +13,8 @@ export default function CreateUserModal({ show, handleClose, handleUpdate }) {
    });   
 
    // Função responsável por receber os resultados da alteração do formulário
-   function handleChange(element) {
-      const { name, value } = element.target;
+   function handleChange(e) {
+      const { name, value } = e.target;
       setFormData((prevData) => ({
          ...prevData,
          [name]: value,
@@ -22,7 +22,7 @@ export default function CreateUserModal({ show, handleClose, handleUpdate }) {
    }
 
    // função responsável por submeter o formulário
-   function handleSubmit(event) {
+   const handleSubmit = async (event) => {
       event.preventDefault();
       try {
          // Criação de usuário
@@ -37,23 +37,17 @@ export default function CreateUserModal({ show, handleClose, handleUpdate }) {
    }
 
    // Criação de um usuário
-   async function addUser(newUserData) {
+   const addUser = async(newUserData) => {
       const toastCreateUser = toast.loading("Creating user...");
 
       //TODO: Validação
 
       // Executa os comandos da service para requisição ao backend
       try {
+         console.log(newUserData);
          const response = await createUser(newUserData);
 
-         // Limpando os campos do formulário
-         setFormData({
-            userName: "",
-            email: "",
-            phone: "",
-            birthDate: "",
-         });
-
+         
          toast.update(toastCreateUser, {
             render: `${response.message}`,
             type: "success",
@@ -91,7 +85,7 @@ export default function CreateUserModal({ show, handleClose, handleUpdate }) {
                      <Form.Label>UserName</Form.Label>
                      <Form.Control
                         type="text"
-                        id="userName"
+                        name="userName"
                         placeholder="userName"
                         defaultValue={formData.userName}
                         onChange={handleChange}
@@ -102,7 +96,7 @@ export default function CreateUserModal({ show, handleClose, handleUpdate }) {
                      <Form.Label>Email</Form.Label>
                      <Form.Control
                         type="email"
-                        id="email"
+                        name="email"
                         placeholder="name@example.com"
                         defaultValue={formData.email}
                         onChange={handleChange}
@@ -113,7 +107,7 @@ export default function CreateUserModal({ show, handleClose, handleUpdate }) {
                      <Form.Label>phone</Form.Label>
                      <Form.Control
                         type="textarea"
-                        id="phone"
+                        name="phone"
                         placeholder="(XX) X XXXX-XXXX"
                         defaultValue={formData.phone}
                         onChange={handleChange}
@@ -123,7 +117,7 @@ export default function CreateUserModal({ show, handleClose, handleUpdate }) {
                      <Form.Label>BirthDate</Form.Label>
                      <Form.Control
                         type="date"
-                        id="birthDate"
+                        name="birthDate"
                         defaultValue={formData.birthDate}
                         onChange={handleChange}
                      />

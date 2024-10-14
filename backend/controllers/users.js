@@ -6,8 +6,7 @@ export const addUser = async (req, res) => {
         userName,
         email,
         phone,
-        birthDate,
-
+        birthDate
     } = req.body;
 
     try {

@@ -106,7 +106,7 @@ export default function UpdateUserModal({
                      <Form.Label>Email</Form.Label>
                      <Form.Control
                         type="email"
-                        id="email"
+                        name="email"
                         placeholder="name@example.com"
                         defaultValue={formData.email}
                         onChange={handleChange}
@@ -116,7 +116,7 @@ export default function UpdateUserModal({
                      <Form.Label>phone</Form.Label>
                      <Form.Control
                         type="textarea"
-                        id="phone"
+                        name="phone"
                         placeholder="(XX) X XXXX-XXXX"
                         defaultValue={formData.phone}
                         onChange={handleChange}
@@ -126,7 +126,7 @@ export default function UpdateUserModal({
                      <Form.Label>BirthDate</Form.Label>
                      <Form.Control
                         type="date"
-                        id="birthDate"
+                        name="birthDate"
                         defaultValue={formData.birthDate}
                         onChange={handleChange}
                      />
