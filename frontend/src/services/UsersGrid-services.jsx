@@ -18,7 +18,7 @@ export async function readUsers() {
    return await response.json();
 }
 
-export async function readUser(id, data) {
+export async function readUser(id) {
    const response = await fetch(`${url + id}`, {
       method: "GET"
    });

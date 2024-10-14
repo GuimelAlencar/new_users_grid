@@ -3,14 +3,14 @@ import { toast } from "react-toastify";
 import { Row, Button, Modal, Form } from "react-bootstrap";
 import { createUser } from "../../services/UsersGrid-services";
 
-export default function CreateUserModal({ show, handleClose }) {
+export default function CreateUserModal({ show, handleClose, handleUpdate }) {
    
    const [formData, setFormData] = useState({
       userName: "",
       email: "",
       phone: "",
       birthDate: "",
-   });
+   });   
 
    // Função responsável por receber os resultados da alteração do formulário
    function handleChange(element) {
@@ -28,6 +28,8 @@ export default function CreateUserModal({ show, handleClose }) {
          // Criação de usuário
          const response = addUser(formData);
 
+         handleClose();
+         handleUpdate();
          return response;
       } catch (error) {
          return console.log(`An error has occured: ${error}`);
@@ -36,9 +38,9 @@ export default function CreateUserModal({ show, handleClose }) {
 
    // Criação de um usuário
    async function addUser(newUserData) {
-      //TODO: Validação
-
       const toastCreateUser = toast.loading("Creating user...");
+
+      //TODO: Validação
 
       // Executa os comandos da service para requisição ao backend
       try {
@@ -52,17 +54,25 @@ export default function CreateUserModal({ show, handleClose }) {
             birthDate: "",
          });
 
-         return toast.success(`Success: ${response}`, {
-            id: toastCreateUser,
+         toast.update(toastCreateUser, {
+            render: `${response.message}`,
+            type: "success",
+            isLoading: false,
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true
          });
       } catch (error) {
-         return toast.error(`An error has occured: ${error}`, {
-            id: toastCreateUser,
+         toast.update(toastCreateUser, {
+            render: `${response.message + error}`,
+            type: "error",
+            isLoading: false,
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
          });
       }
    }
-
-   //TODO: A grid precisa ser atualizada
 
    return (
       <Modal
@@ -80,11 +90,13 @@ export default function CreateUserModal({ show, handleClose }) {
                   <Form.Group className="mb-3">
                      <Form.Label>UserName</Form.Label>
                      <Form.Control
-                        type="textarea"
+                        type="text"
                         id="userName"
+                        placeholder="userName"
                         defaultValue={formData.userName}
                         onChange={handleChange}
                      />
+                     <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                   </Form.Group>
                   <Form.Group className="mb-3">
                      <Form.Label>Email</Form.Label>
@@ -95,6 +107,7 @@ export default function CreateUserModal({ show, handleClose }) {
                         defaultValue={formData.email}
                         onChange={handleChange}
                      />
+                     <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                   </Form.Group>
                   <Form.Group className="mb-3">
                      <Form.Label>phone</Form.Label>
@@ -127,7 +140,7 @@ export default function CreateUserModal({ show, handleClose }) {
                         phone: "",
                         birthDate: "",
                      });
-                     handleClose = true;
+                     handleClose();
                   }}
                >
                   Cancel

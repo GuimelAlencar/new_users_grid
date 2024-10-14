@@ -1,28 +1,35 @@
-import { useState } from "react";
 import { toast } from "react-toastify";
-import { Row, Button, Modal, Form } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
 import { deleteUser } from "../../services/UsersGrid-services";
 
-export default function DeleteUserModal(id, {show, handleClose}) {
-
+export default function DeleteUserModal({id, show, handleClose, handleUpdate}) {
    async function excludeUser() {
       const toastDeleteUser = toast.loading("Deleting user...");
 
       try {
          const response = await deleteUser(id);
-         
-         clearForm();
-         return toast.success(`Success! + ${response}`, {
-            id: toastDeleteUser,
+
+         handleClose();
+         handleUpdate();
+         toast.update(toastDeleteUser, {
+            render: `${response.message}`,
+            type: "success",
+            isLoading: false,
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true
          });
       } catch (error) {
-         return toast.error("An error has occured: " + error, {
-            id: toastDeleteUser,
+         toast.update(toastDeleteUser, {
+            render: `An error has occurred: ${error}`,
+            type: "error",
+            isLoading: false,
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
          });
       }
    }
-
-   //TODO: A grid precisa ser atualizada
 
    return (
       <Modal
@@ -31,7 +38,7 @@ export default function DeleteUserModal(id, {show, handleClose}) {
          show={show}
          onHide={handleClose}
       >
-         <Modal.Header closeButton>
+         <Modal.Header>
             <Modal.Title>Delete User</Modal.Title>
          </Modal.Header>
          <Modal.Body>
@@ -40,14 +47,14 @@ export default function DeleteUserModal(id, {show, handleClose}) {
          </Modal.Body>
          <Modal.Footer>
             <Button
-               variant="secondary"
+               variant="primary"
                onClick={() => {
                   handleClose();
                }}
             >
                Cancel
             </Button>
-            <Button variant="Danger" onClick={excludeUser}>
+            <Button variant="danger" onClick={excludeUser}>
                Delete
             </Button>
          </Modal.Footer>

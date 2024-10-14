@@ -1,20 +1,36 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { Row, Button, Modal, Form } from "react-bootstrap";
 import { updateUser, readUser } from "../../services/UsersGrid-services";
 
-export default function UpdateUserModal(id, { show, handleClose }) {
-   
-   //TODO: Maneira do form receber o ID do usuário
-
-   const user = readUser(id);
-
+export default function UpdateUserModal({
+   id,
+   show,
+   handleClose,
+   handleUpdate,
+}) {
    const [formData, setFormData] = useState({
-      email: user.email,
-      phone: user.phone,
-      birthDate: user.birthDate,
+      email: "",
+      phone: "",
+      birthDate: "",
    });
 
+   useEffect(() => {
+      if (show && id) {
+         async () => {
+            try {
+               const user = await readUser(id);
+               setFormData({
+                  email: user.email,
+                  phone: user.phone,
+                  birthDate: user.birthDate,
+               });
+            } catch (error) {
+               toast.error(`Error fetching user data: ${error}`);
+            }
+         };
+      }
+   }, [show, id]);
 
    // Função responsável por receber os resultados da alteração do formulário
    function handleChange(element) {
@@ -33,44 +49,45 @@ export default function UpdateUserModal(id, { show, handleClose }) {
          // Criação de usuário
          const response = editUser(id, formData);
 
-         return toast.success(`Success: ${response}`, {
-            id: toastSubmit,
+         handleClose();
+         handleUpdate();
+         toast.update(toastSubmit, {
+            render: `${response.message}`,
+            type: "success",
+            isLoading: false,
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
          });
       } catch (error) {
-         return toast.error(`An error has occured: ${error}`, {
-            id: toastSubmit,
+         toast.update(toastSubmit, {
+            render: `${response.message + error}`,
+            type: "error",
+            isLoading: false,
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
          });
       }
    }
 
    // Criação de um usuário
-   async function editUser(newUserData) {
+   async function editUser(id, newUserData) {
       //TODO: Validação
 
       const toastCreateUser = toast.loading("Updating user...");
 
       // Executa os comandos da service para requisição ao backend
-      try {
-         const response = await updateUser(newUserData.id, newUserData);
+      const response = await updateUser(id, newUserData);
 
-         // Limpando os campos do formulário
-         setFormData({
-            email: "",
-            phone: "",
-            birthDate: "",
-         });
-
-         return toast.success(`Success: ${response}`, {
-            id: toastCreateUser,
-         });
-      } catch (error) {
-         return toast.error(`An error has occured: ${error}`, {
-            id: toastCreateUser,
-         });
-      }
+      // Limpando os campos do formulário
+      setFormData({
+         email: "",
+         phone: "",
+         birthDate: "",
+      });
+      return response;
    }
-
-   //TODO: A grid precisa ser atualizada
 
    return (
       <Modal
@@ -84,7 +101,7 @@ export default function UpdateUserModal(id, { show, handleClose }) {
          </Modal.Header>
          <Form onSubmit={handleSubmit}>
             <Modal.Body>
-               <Row className="mb-4">                  
+               <Row className="mb-4">
                   <Form.Group className="mb-3">
                      <Form.Label>Email</Form.Label>
                      <Form.Control

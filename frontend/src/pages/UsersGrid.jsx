@@ -1,69 +1,50 @@
 import { useState, useEffect } from "react";
-
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 import { Container, Row, Col, Button, Table } from "react-bootstrap";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { readUsers } from "../services/UsersGrid-services.jsx";
-
 import CreateUserModal from "../components/Modals/CreateUserModal";
 import UpdateUserModal from "../components/Modals/UpdateUserModal";
 import DeleteUserModal from "../components/Modals/DeleteUserModal";
 
 function UsersGrid() {
    const [users, setUsers] = useState([]);
-   const [usersID, setUsersID] = useState("");
+   const [selectedUserId, setSelectedUserId] = useState(null);
 
    const [showCreateUserModal, setShowCreateUserModal] = useState(false);
-   const handleShowCreateModal = () => setShowCreateUserModal(true);
-   const handleCloseCreateModal = () => setShowCreateUserModal(false);
    const [showUpdateUserModal, setShowUpdateUserModal] = useState(false);
-   const handleShowUpdateModal = () => setShowUpdateUserModal(true);
-   const handleCloseUpdateModal = () => setShowUpdateUserModal(false);
    const [showDeleteUserModal, setShowDeleteUserModal] = useState(false);
-   const handleShowDeleteModal = () => setShowDeleteUserModal(true);
-   const handleCloseDeleteModal = () => setShowDeleteUserModal(false);
 
-   
-
-   // Função que atualiza a grid sempre que há alguma alteração na variável de usuários
    useEffect(() => {
       getUsers();
-   }, [setUsers]);
+   }, []);
 
-   // Função responsável por pegar todos os usuários do banco de dados
    async function getUsers() {
-      const toastGetUsers = toast.loading("Getting users...");
-
+      const toastGetUsers = toast.loading("Requesting users...");
       try {
-         var response = await readUsers();
-         response = response.users.sort((a, b) =>
+         const response = await readUsers();
+         const users = response.users.sort((a, b) =>
             a.userName > b.userName ? 1 : -1
          );
-
-         // Parte responsável por atualizar a lista de usuários da página com os dados vindos do getUsers
-         //TODO: Ainda tenho ressalvas quanto a atualização do objeto users estar dentro de uma função destinada a pegar dados do db
-         setUsers(response);
-
-         return toast.update(toastGetUsers, {
-            render: "Users successfuly loaded!",
+         const message = response.message;
+         setUsers(users);
+         toast.update(toastGetUsers, {
+            render: `${message}`,
             type: "success",
             isLoading: false,
             autoClose: 5000,
             hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
+            closeOnClick: true
          });
       } catch (error) {
-         return toast.update(toastGetUsers, {
-            render: `An error has occured: ${error}`,
+         toast.update(toastGetUsers, {
+            render: `${response.message + error}`,
             type: "error",
             isLoading: false,
             autoClose: 5000,
             hideProgressBar: false,
             closeOnClick: true,
-            pauseOnHover: true,
          });
       }
    }
@@ -74,7 +55,7 @@ function UsersGrid() {
             <Col>
                <Row>
                   <Col>
-                     <p className="h3 mt-4 ">Users_Grid</p>
+                     <p className="h3 mt-4 ">Users Grid</p>
                   </Col>
                </Row>
                <Row>
@@ -82,7 +63,7 @@ function UsersGrid() {
                      <Button
                         variant="primary"
                         size="lg"
-                        onClick={handleShowCreateModal}
+                        onClick={() => setShowCreateUserModal(true)}
                      >
                         Add
                      </Button>
@@ -103,8 +84,8 @@ function UsersGrid() {
                            </tr>
                         </thead>
                         <tbody>
-                           {users.map((item, i) => (
-                              <tr key={i}>
+                           {users.map((item) => (
+                              <tr key={item.id}>
                                  <td className="td" style={{ width: "30%" }}>
                                     {item.userName}
                                  </td>
@@ -126,8 +107,8 @@ function UsersGrid() {
                                        variant="info"
                                        size="sm"
                                        onClick={() => {
-                                          handleShowUpdateModal;
-                                          setUsersID(item.id);
+                                          setSelectedUserId(item.id);
+                                          setShowUpdateUserModal(true);
                                        }}
                                     >
                                        <FaEdit />
@@ -141,8 +122,8 @@ function UsersGrid() {
                                        variant="danger"
                                        size="sm"
                                        onClick={() => {
-                                          handleShowDeleteModal(true);
-                                          setUsersID(item.id);
+                                          setSelectedUserId(item.id);
+                                          setShowDeleteUserModal(true);
                                        }}
                                     >
                                        <FaTrash />
@@ -154,16 +135,29 @@ function UsersGrid() {
                      </Table>
                   </Col>
                </Row>
-               <CreateUserModal />
-               <UpdateUserModal id={usersID} />
-               <DeleteUserModal id={usersID} />
+               <CreateUserModal
+                  show={showCreateUserModal}
+                  handleClose={() => setShowCreateUserModal(false)}
+                  handleUpdate={getUsers}
+               />
+               <UpdateUserModal
+                  id={selectedUserId}
+                  show={showUpdateUserModal}
+                  handleClose={() => setShowUpdateUserModal(false)}
+                  handleUpdate={getUsers}
+               />
+               <DeleteUserModal
+                  id={selectedUserId}
+                  show={showDeleteUserModal}
+                  handleClose={() => setShowDeleteUserModal(false)}
+                  handleUpdate={getUsers}
+               />
                <ToastContainer
                   position="top-center"
                   autoClose={3000}
                   limit={3}
                   closeOnClick
-                  pauseOnFocusLoss
-                  pauseOnHover
+                  pauseOnFocusLoss                  
                   theme="dark"
                />
             </Col>
@@ -173,16 +167,3 @@ function UsersGrid() {
 }
 
 export default UsersGrid;
-
-/*
-   
-   
-   const [currentPage, setCurrentPage] = useState(1);
-   const recordsPerPage = 5;
-   const lastIndex = currentPage * recordsPerPage;
-   const firstIndex = lastIndex - recordsPerPage;
-   const records = users.slice(firstIndex, lastIndex);
-   const numberOfPages = Math.ceil(users.length / recordsPerPage);
-   const numbers = [...Array(numberOfPages + 1).keys].slice(1);
-   
-*/

@@ -11,7 +11,7 @@ export const addUser = async (req, res) => {
     } = req.body;
 
     try {
-        const user = await db.users.create({
+        await db.users.create({
             userName,
             email,
             phone,
@@ -19,13 +19,14 @@ export const addUser = async (req, res) => {
             createdAt: new Date(),
             updatedAt: new Date()
         });
-        console.log('New user created: ', user);
         return res.json({ 
-            message: 'New user successfully created.'
+            message: "New user successfully created."
         });
     } catch (error){
-        console.error(error);
-        return res.status(500).json({ error: 'Internal Server Error' });
+        return res.status(500).json({
+            message: "An error has occurred: ",
+            error: `${error}` 
+        });
     };
 };
 
@@ -42,33 +43,37 @@ export const getUser = async (req, res) => {
             id: req.params.id,
         },
     });
-    if(user){
-        return res.json({
-            error: false,
-            user,
+    try {
+        if(user){
+            return res.json({
+                message: "User succesfully loaded.",
+                user,
+            });
+        } else{
+            return res.status(400).json({
+                message: "User not found",
+            })
+        }
+    } catch(error) {
+        return res.status(500).json({
+            message: "Something went wrong: ",
+            error: `${error}`,          
         });
-    } else{
-        return res.status(400).json({
-            error: true,
-            message: "Content not found."
-        });
-    };
+    }
 };
 
 // Read all
 export const getUsers = async (req, res) => {
-    
     const users = await db.users.findAll();
-    console.log(users);
-    if(users){
+    try {
         return res.json({
-            error: false,
+            message: "Users successfuly loaded!",
             users,
         });
-    } else{
-        return res.status(400).json({
-            error: true,
-            message: "Content not found.",
+    } catch(error) {
+        return res.status(500).json({            
+            message: "Something went wrong:",
+            error: `${error}`
         });
     }
 };
@@ -85,7 +90,7 @@ export const updateUser = async (req, res) => {
     } = req.body;
 
     try {
-        const updatedUser = await db.users.update({
+        await db.users.update({
             userName,
             email,
             phone,
@@ -96,14 +101,14 @@ export const updateUser = async (req, res) => {
                 id: userID,
             }
         });
-
-        console.log('User updated: ', updatedUser);
         return res.json({ 
-            message: 'User successfully updated.'
+            message: "User successfully updated.",
         });
     } catch (error){
-        console.error(error);
-        return res.status(500).json({ error: 'Internal Server Error' });
+        return res.status(500).json({ 
+            message: "Something went wrong: ",
+            error: `${error}`, 
+        });
     };
 };
 
@@ -121,16 +126,17 @@ export const deleteUser = async (req, res) => {
             });
             console.log('User deleted: ', deletedUser);
             return res.json({ 
-                message: 'User successfully deleted.'
+                message: "User successfully deleted.",
             });
         } else {
             return res.status(400).json({
-                error: true,
-                message: "Content not found."
+                message: "Content not found.",
             });
         }
     } catch (error){
-        console.error(error);
-        return res.status(500).json({ error: 'Internal Server Error' });
+        return res.status(500).json({ 
+            message: "Something went wrong: ",
+            error: `${error}`,
+        });
     };
 };
