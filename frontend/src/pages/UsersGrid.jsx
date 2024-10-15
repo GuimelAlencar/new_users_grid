@@ -154,7 +154,7 @@ function UsersGrid() {
                />
                <ToastContainer
                   position="top-center"
-                  autoClose={3000}
+                  autoClose={2000}
                   limit={3}
                   closeOnClick
                   pauseOnFocusLoss                  
