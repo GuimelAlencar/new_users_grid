@@ -1,6 +1,6 @@
 import { toast } from "react-toastify";
 import { Button, Modal } from "react-bootstrap";
-import { deleteUser } from "../../services/UsersGrid-services";
+import { deleteUser } from "../services/UsersGrid-services";
 
 export default function DeleteUserModal({id, show, handleClose, handleUpdate}) {
    async function excludeUser() {

@@ -4,9 +4,9 @@ import "react-toastify/dist/ReactToastify.css";
 import { Container, Row, Col, Button, Table } from "react-bootstrap";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { readUsers } from "../services/UsersGrid-services.jsx";
-import CreateUserModal from "../components/Modals/CreateUserModal";
-import UpdateUserModal from "../components/Modals/UpdateUserModal";
-import DeleteUserModal from "../components/Modals/DeleteUserModal";
+import CreateUserModal from "../components/CreateUserModal";
+import UpdateUserModal from "../components/UpdateUserModal";
+import DeleteUserModal from "../components/DeleteUserModal";
 
 function UsersGrid() {
    const [users, setUsers] = useState([]);

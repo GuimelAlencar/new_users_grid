@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { Row, Button, Modal, Form } from "react-bootstrap";
-import { createUser } from "../../services/UsersGrid-services";
+import { createUser } from "../services/UsersGrid-services";
 
 export default function CreateUserModal({ show, handleClose, handleUpdate }) {
    

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { Row, Button, Modal, Form } from "react-bootstrap";
-import { updateUser, readUser } from "../../services/UsersGrid-services";
+import { updateUser, readUser } from "../services/UsersGrid-services";
 
 export default function UpdateUserModal({
    id,
