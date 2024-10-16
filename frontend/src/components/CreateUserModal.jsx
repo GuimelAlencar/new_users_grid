@@ -113,7 +113,7 @@ export default function CreateUserModal({ show, handleClose, handleUpdate }) {
                         onChange={handleChange}
                      />
                   </Form.Group>
-                  <Form.Group className="mb-3">
+                  <Form.Group className="mb-0">
                      <Form.Label>BirthDate</Form.Label>
                      <Form.Control
                         type="date"

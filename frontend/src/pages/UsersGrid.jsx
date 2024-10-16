@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Container, Row, Col, Button, Table } from "react-bootstrap";
+import { Container, Row, Col, Button, Table, Card } from "react-bootstrap";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { readUsers } from "../services/UsersGrid-services.jsx";
 import CreateUserModal from "../components/CreateUserModal";
@@ -35,7 +35,7 @@ function UsersGrid() {
             isLoading: false,
             autoClose: 5000,
             hideProgressBar: false,
-            closeOnClick: true
+            closeOnClick: true,
          });
       } catch (error) {
          toast.update(toastGetUsers, {
@@ -51,27 +51,30 @@ function UsersGrid() {
 
    return (
       <Container>
-         <Row>
-            <Col>
-               <Row>
-                  <Col>
-                     <p className="h3 mt-4 ">Users Grid</p>
+         <Row className="gx-0">
+            <Col className="p-3">               
+               <Row className="mt-4">
+                  <Col className="mb-1">
+                     <div className="d-flex justify-content-end">
+                        <Button
+                           variant="primary"
+                           size="lg"
+                           onClick={() => setShowCreateUserModal(true)}
+                        >
+                           Add new User
+                        </Button>
+                     </div>
                   </Col>
                </Row>
-               <Row>
-                  <Col>
-                     <Button
-                        variant="primary"
-                        size="lg"
-                        onClick={() => setShowCreateUserModal(true)}
-                     >
-                        Add
-                     </Button>
-                  </Col>
-               </Row>
-               <Row>
-                  <Col>
-                     <Table>
+               <Row className="m-0 mt-1">
+                  <Card className="p-3 my-3 shadow">
+                     <Card.Header>
+                        <Card.Title>Users</Card.Title>
+                        <Card.Subtitle className="mb-2 text-muted">
+                           Users Grid
+                        </Card.Subtitle>
+                     </Card.Header>
+                     <Table responsive striped bordered hover variant="dark">
                         <thead>
                            <tr>
                               <th className="th">Name</th>
@@ -133,7 +136,7 @@ function UsersGrid() {
                            ))}
                         </tbody>
                      </Table>
-                  </Col>
+                  </Card>
                </Row>
                <CreateUserModal
                   show={showCreateUserModal}
@@ -157,7 +160,7 @@ function UsersGrid() {
                   autoClose={2000}
                   limit={3}
                   closeOnClick
-                  pauseOnFocusLoss                  
+                  pauseOnFocusLoss
                   theme="dark"
                />
             </Col>
